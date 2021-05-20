@@ -65,15 +65,15 @@ class ResponsiveAnalogRead
     inline void setActivityThreshold(float newThreshold) { activityThreshold = newThreshold; }
     // the amount of movement that must take place to register as activity and start moving the output value. Defaults to 4.0
     inline void setAnalogResolution(int resolution) { analogResolution = resolution; }
-    // if your ADC is something other than 10bit (1024), set that here
+    // if your ADC is something other than 12bit (4096), set that here
 
   private:
     int pin;
     int adc;
-    int analogResolution = 1024;
+    int analogResolution = 4096;
     float snapMultiplier;
     bool sleepEnable;
-    float activityThreshold = 4.0;
+    float activityThreshold = 16.0;
     bool edgeSnapEnable = true;
 
     float smoothValue;

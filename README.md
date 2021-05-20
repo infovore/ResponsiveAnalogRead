@@ -13,7 +13,7 @@ You can preview the way the algorithm works with [sleep enabled](http://codepen.
 
 An article discussing the design of the algorithm can be found [here](http://damienclarke.me/code/posts/writing-a-better-noise-reducing-analogread).
 
-This port of the library makes it function on a Raspberry Pi Pico (and, likely, any RP2040-based board)
+This port of the library makes it function on a Raspberry Pi Pico (and, likely, any RP2040-based board). It slightly changes the interface to map better to how the RP2040 libraries represent the ADCs, and sets the default resolution to 12-bit, as per the RP2040's ADC.
 
 ## How to use
 
@@ -41,9 +41,6 @@ ResponsiveAnalogRead analog(ADC, true);
 
 
 int main() {
-  analog.setAnalogResolution(1 << 12); // 12 bit ADC on the RP2040
-  analog.setActivityThreshold(16);     // ... so increase activity threshold to match to 1 << 12-8
-
   while (true) {
     analog.update();
     if(analog.hasChanged()) {
@@ -66,9 +63,6 @@ ResponsiveAnalogRead analog(0, true);
 
 int main() {
   adc_gpio_init(26)
-
-  analog.setAnalogResolution(1 << 12); // 12 bit ADC on the RP2040
-  analog.setActivityThreshold(16);     // ... so increase activity threshold to match to 1 << 12-8
 
   while(true) {
     // read from your ADC
@@ -96,9 +90,6 @@ ResponsiveAnalogRead analogOne(0, true);
 ResponsiveAnalogRead analogTwo(1, true);
 
 int main() {
-  analog.setAnalogResolution(1 << 12); // 12 bit ADC on the RP2040
-  analog.setActivityThreshold(16);     // ... so increase activity threshold to match to 1 << 12-8
-
   while(true) {
     // update the ResponsiveAnalogRead objects every loop
     analogOne.update();
@@ -144,7 +135,7 @@ Sleep allows you to minimise the amount of responsive value changes over time. I
 3. It classifies changes in the input voltage as being "active" or not. A lack of activity tells it to sleep.
 
 ### Activity threshold
-- `void setActivityThreshold(float newThreshold) // the amount of movement that must take place for it to register as activity and start moving the output value. Defaults to 4.0. (version 1.1+)`
+- `void setActivityThreshold(float newThreshold) // the amount of movement that must take place for it to register as activity and start moving the output value. Defaults to 16.0.(version 1.1.0+)`
 
 ### Snap multiplier
 - `void setSnapMultiplier(float newMultiplier)`
@@ -157,7 +148,7 @@ SnapMultiplier is a value from 0 to 1 that controls the amount of easing. Increa
 ### Analog resolution
 - `void setAnalogResolution(int resolution)`
 
-If your ADC is something other than 10bit (1024), set that using this.
+If your ADC is something other than 12bit (4096), set that using this.
 
 ## License
 
