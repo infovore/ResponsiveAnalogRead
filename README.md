@@ -1,7 +1,5 @@
 # ResponsiveAnalogRead
 
-> WORK IN PROGRESS. Examples and code samples need updating, but I'm using this on a Pico already.
-
 ![ResponsiveAnalogRead](https://user-images.githubusercontent.com/345320/50956817-c4631a80-1510-11e9-806a-27583707ca91.jpg)
 
 ResponsiveAnalogRead is an C++ library for eliminating noise in analogRead inputs without decreasing responsiveness. It sets out to achieve the following:
@@ -22,7 +20,10 @@ This port of the library makes it function on a Raspberry Pi Pico (and, likely, 
 Here's a basic example:
 
 ```cpp
-// include the ResponsiveAnalogRead library. Make sure you've copied the code into your program folder, and added it to CMAKE
+#include "pico/stdlib.h"
+#include "hardware/gpio.h"
+#include "hardware/adc.h"
+// include the ResponsiveAnalogRead library. Make sure you've copied the code into your program folder, and added it to CMakeLists.txt
 #include <ResponsiveAnalogRead.h>
 
 // define the ADC you want to use (0-3, which will be mapped to pins 26-29 on the Pico/RP2040)
@@ -38,76 +39,73 @@ ResponsiveAnalogRead analog(ADC, true);
 // increase this to lessen the amount of easing (such as 0.1) and make the responsive values more responsive
 // but doing so may cause more noise to seep through if sleep is not enabled
 
-void setup() {
-  // begin serial so we can see analog read values through the serial monitor
-  Serial.begin(9600);
-}
 
-void loop() {
-  // update the ResponsiveAnalogRead object every loop
-  analog.update();
+void main() {
+  analog.setAnalogResolution(1 << 12); // 12 bit ADC on the RP2040
+  analog.setActivityThreshold(16);     // ... so increase activity threshold to match to 1 << 12-8
 
-  Serial.print(analog.getRawValue());
-  Serial.print("\t");
-  Serial.print(analog.getValue());
-  
-  // if the responsive value has change, print out 'changed'
-  if(analog.hasChanged()) {
-    Serial.print("\tchanged");
+  while (true) {
+    analog.update();
+    if(analog.hasChanged()) {
+      int value = analog.getValue();
+      // ... do something with value
+    }
   }
-  
-  Serial.println("");
-  delay(20);
 }
 ```
 
 ### Using your own ADC
 
 ```cpp
+#include "pico/stdlib.h"
+#include "hardware/gpio.h"
+#include "hardware/adc.h
 #include <ResponsiveAnalogRead.h>
 
 ResponsiveAnalogRead analog(0, true);
 
-void setup() {
-  // begin serial so we can see analog read values through the serial monitor
-  Serial.begin(9600);
-}
+void main() {
+  adc_gpio_init(26)
 
-void loop() {
-  // read from your ADC
-  // update the ResponsiveAnalogRead object every loop
-  int reading = YourADCReadMethod();
-  analog.update(reading);
-  Serial.print(analog.getValue());
-  
-  Serial.println("");
-  delay(20);
+  analog.setAnalogResolution(1 << 12); // 12 bit ADC on the RP2040
+  analog.setActivityThreshold(16);     // ... so increase activity threshold to match to 1 << 12-8
+
+  while(true) {
+    // read from your ADC
+    adc_select_input(adc);
+    int reading = adc_read();
+    // update the ResponsiveAnalogRead object every loop
+    analog.update(reading);
+
+    if(analog.hasChanged()) {
+      // .. do something with it
+    }
+  }
 }
 ```
 
 ### Smoothing multiple inputs
 
-```Arduino
+```cpp
+#include "pico/stdlib.h"
+#include "hardware/gpio.h"
+#include "hardware/adc.h
 #include <ResponsiveAnalogRead.h>
 
-ResponsiveAnalogRead analogOne(A1, true);
-ResponsiveAnalogRead analogTwo(A2, true);
+ResponsiveAnalogRead analogOne(0, true);
+ResponsiveAnalogRead analogTwo(1, true);
 
-void setup() {
-  // begin serial so we can see analog read values through the serial monitor
-  Serial.begin(9600);
-}
+void main() {
+  analog.setAnalogResolution(1 << 12); // 12 bit ADC on the RP2040
+  analog.setActivityThreshold(16);     // ... so increase activity threshold to match to 1 << 12-8
 
-void loop() {
-  // update the ResponsiveAnalogRead objects every loop
-  analogOne.update();
-  analogTwo.update();
+  while(true) {
+    // update the ResponsiveAnalogRead objects every loop
+    analogOne.update();
+    analogTwo.update();
+    // ...do something with their new values
+  }
   
-  Serial.print(analogOne.getValue());
-  Serial.print(analogTwo.getValue());
-  
-  Serial.println("");
-  delay(20);
 }
 ```
 
