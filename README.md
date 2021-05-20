@@ -1,6 +1,6 @@
 # ResponsiveAnalogRead (for RP2040/Raspberry Pi Pico)
 
-![ResponsiveAnalogRead](https://user-images.githubusercontent.com/345320/50956817-c4631a80-1510-11e9-806a-27583707ca91.jpg)
+![ResponsiveAnalogRead RP2040](https://user-images.githubusercontent.com/1103/119011417-f4e2db00-b98c-11eb-8a08-2d3ad6ba30db.png)
 
 ResponsiveAnalogRead is an C++ library for eliminating noise in analogRead inputs without decreasing responsiveness. It sets out to achieve the following:
 
