@@ -1,4 +1,4 @@
-# ResponsiveAnalogRead
+# ResponsiveAnalogRead (for RP2040/Raspberry Pi Pico)
 
 ![ResponsiveAnalogRead](https://user-images.githubusercontent.com/345320/50956817-c4631a80-1510-11e9-806a-27583707ca91.jpg)
 
