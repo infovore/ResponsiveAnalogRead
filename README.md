@@ -40,7 +40,7 @@ ResponsiveAnalogRead analog(ADC, true);
 // but doing so may cause more noise to seep through if sleep is not enabled
 
 
-void main() {
+int main() {
   analog.setAnalogResolution(1 << 12); // 12 bit ADC on the RP2040
   analog.setActivityThreshold(16);     // ... so increase activity threshold to match to 1 << 12-8
 
@@ -64,7 +64,7 @@ void main() {
 
 ResponsiveAnalogRead analog(0, true);
 
-void main() {
+int main() {
   adc_gpio_init(26)
 
   analog.setAnalogResolution(1 << 12); // 12 bit ADC on the RP2040
@@ -95,7 +95,7 @@ void main() {
 ResponsiveAnalogRead analogOne(0, true);
 ResponsiveAnalogRead analogTwo(1, true);
 
-void main() {
+int main() {
   analog.setAnalogResolution(1 << 12); // 12 bit ADC on the RP2040
   analog.setActivityThreshold(16);     // ... so increase activity threshold to match to 1 << 12-8
 
