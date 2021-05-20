@@ -1,8 +1,10 @@
 # ResponsiveAnalogRead
 
+> WORK IN PROGRESS. Examples and code samples need updating, but I'm using this on a Pico already.
+
 ![ResponsiveAnalogRead](https://user-images.githubusercontent.com/345320/50956817-c4631a80-1510-11e9-806a-27583707ca91.jpg)
 
-ResponsiveAnalogRead is an Arduino library for eliminating noise in analogRead inputs without decreasing responsiveness. It sets out to achieve the following:
+ResponsiveAnalogRead is an C++ library for eliminating noise in analogRead inputs without decreasing responsiveness. It sets out to achieve the following:
 
 1. Be able to reduce large amounts of noise when reading a signal. So if a voltage is unchanging aside from noise, the values returned should never change due to noise alone.
 2. Be extremely responsive (i.e. not sluggish) when the voltage changes quickly.
@@ -13,21 +15,23 @@ You can preview the way the algorithm works with [sleep enabled](http://codepen.
 
 An article discussing the design of the algorithm can be found [here](http://damienclarke.me/code/posts/writing-a-better-noise-reducing-analogread).
 
+This port of the library makes it function on a Raspberry Pi Pico (and, likely, any RP2040-based board)
+
 ## How to use
 
 Here's a basic example:
 
-```Arduino
-// include the ResponsiveAnalogRead library
+```cpp
+// include the ResponsiveAnalogRead library. Make sure you've copied the code into your program folder, and added it to CMAKE
 #include <ResponsiveAnalogRead.h>
 
-// define the pin you want to use
-const int ANALOG_PIN = A0;
+// define the ADC you want to use (0-3, which will be mapped to pins 26-29 on the Pico/RP2040)
+const int ADC = 0;
 
 // make a ResponsiveAnalogRead object, pass in the pin, and either true or false depending on if you want sleep enabled
 // enabling sleep will cause values to take less time to stop changing and potentially stop changing more abruptly,
 // where as disabling sleep will cause values to ease into their correct position smoothly and with slightly greater accuracy
-ResponsiveAnalogRead analog(ANALOG_PIN, true);
+ResponsiveAnalogRead analog(ADC, true);
 
 // the next optional argument is snapMultiplier, which is set to 0.01 by default
 // you can pass it a value from 0 to 1 that controls the amount of easing
@@ -59,7 +63,7 @@ void loop() {
 
 ### Using your own ADC
 
-```Arduino
+```cpp
 #include <ResponsiveAnalogRead.h>
 
 ResponsiveAnalogRead analog(0, true);
@@ -109,15 +113,13 @@ void loop() {
 
 ## How to install
 
-In the Arduino IDE, go to Sketch > Include libraries > Manage libraries, and search for ResponsiveAnalogRead.
-You can also just use the files directly from the src folder.
-
-Look at the example in the examples folder for an idea on how to use it in your own projects.
-The source files are also heavily commented, so check those out if you want fine control of the library's behaviour.
+* Copy the contents of `src` into your CPP program.
+* Add ResponsiveAnalogRead.cpp to the list of files in the `add_executable` directive of the CMake file
+* Include `ResponsiveAnalogRead.h` as necessary
 
 ## Constructor arguments
 
-- `pin` - int, the pin to read (e.g. A0).
+- `adc` - int, the adc to read (0-3, which are physical pins 26-29 respectively on a Pi Pico).
 - `sleepEnable` - boolean, sets whether sleep is enabled. Defaults to true. Enabling sleep will cause values to take less time to stop changing and potentially stop changing more abruptly, where as disabling sleep will cause values to ease into their correct position smoothly.
 - `snapMultiplier` - float, a value from 0 to 1 that controls the amount of easing. Defaults to 0.01. Increase this to lessen the amount of easing (such as 0.1) and make the responsive values more responsive, but doing so may cause more noise to seep through if sleep is not enabled.
 
@@ -163,7 +165,7 @@ If your ADC is something other than 10bit (1024), set that using this.
 
 Licensed under the MIT License (MIT)
 
-Copyright (c) 2016, Damien Clarke
+Copyright (c) 2016, Damien Clarke, 2021 Tom Armitage
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
