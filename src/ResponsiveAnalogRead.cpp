@@ -107,7 +107,7 @@ int ResponsiveAnalogRead::getResponsiveValue(int newValue) {
   // a small amount to snap so it'll tend to snap into a more accurate position
   // before sleeping starts.
   if (sleepEnable) {
-    snap *= 0.5 + 0.5;
+    snap = (snap*0.5) + 0.5;
   }
 
   // calculate the exponential moving average based on the snap
